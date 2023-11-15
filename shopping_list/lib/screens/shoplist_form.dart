@@ -14,6 +14,8 @@ class _ShopFormPageState extends State<ShopFormPage> {
     String _description = "";
     @override
     Widget build(BuildContext context) {
+      final request = context.watch<CookieRequest>();
+
         return Scaffold(
           appBar: AppBar(
             title: const Center(
@@ -114,38 +116,35 @@ class _ShopFormPageState extends State<ShopFormPage> {
                           backgroundColor:
                               MaterialStateProperty.all(Colors.indigo),
                         ),
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: const Text('Produk berhasil tersimpan'),
-                                  content: SingleChildScrollView(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text('Nama: $_name'),
-                                        // Munculkan value-value lainnya
-                                        Text('Harga: $_price'),
-                                        Text('Deskripsi: $_description'),
-                                      ],
-                                    ),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      child: const Text('OK'),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                              // Kirim ke Django dan tunggu respons
+                              // Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
+                              final response = await request.postJson(
+                              "http://127.0.0.1:8000/create-flutter/",
+                              jsonEncode(<String, String>{
+                                  'name': _name,
+                                  'price': _price.toString(),
+                                  'description': _description,
+                                  // TODO: Sesuaikan field data sesuai dengan aplikasimu
+                              }));
+                              if (response['status'] == 'success') {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                  content: Text("Produk baru berhasil disimpan!"),
+                                  ));
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => MyHomePage()),
+                                  );
+                              } else {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                      content:
+                                          Text("Terdapat kesalahan, silakan coba lagi."),
+                                  ));
+                              }
                           }
-                          _formKey.currentState!.reset();
                         },
                         child: const Text(
                           "Save",
