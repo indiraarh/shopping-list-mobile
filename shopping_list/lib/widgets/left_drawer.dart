@@ -43,10 +43,11 @@ class LeftDrawer extends StatelessWidget {
             // Bagian redirection ke MyHomePage
             onTap: () {
               Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MyHomePage(),
-                  ));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyHomePage(),
+                )
+              );
             },
           ),
           ListTile(

@@ -1,4 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:shopping_list/screens/menu.dart';
 import 'package:shopping_list/widgets/left_drawer.dart'; // Impor drawer yang sudah dibuat sebelumnya
 
 class ShopFormPage extends StatefulWidget {
@@ -12,6 +16,7 @@ class _ShopFormPageState extends State<ShopFormPage> {
     String _name = "";
     int _price = 0;
     String _description = "";
+    
     @override
     Widget build(BuildContext context) {
       final request = context.watch<CookieRequest>();
